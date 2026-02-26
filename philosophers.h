@@ -5,19 +5,21 @@
 # include <stdlib.h>
 # include <stdbool.h>
 
-typedef struct s_node
+typedef struct s_data
 {
-	s_node	*prev;
-	int	number;
-	bool	fork;
-	int	death;
-	int	eat;
-	int	sleep;
-	int	dinners;
-	s_node	*next;
-}	t_node;
+	int	nb_philo;
+	size_t	time_to_die;
+	size_t	time_to_eat;
+	size_t	time_to_sleep;
+	pthread_mutex_t *forks;
+	pthread_mutex_t print_lock;
+}	t_data;
 
-typedef struct s_linkedlist
+typedef struct s_philo
 {
-	t_node	*head;
-}	t_linkedlist;
+	int	id;
+	pthread_t	thread;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_data	*data;
+}	t_philo;
