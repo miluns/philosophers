@@ -6,13 +6,13 @@
 /*   By: mstawski <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 13:21:52 by mstawski          #+#    #+#             */
-/*   Updated: 2025/09/17 15:34:22 by mstawski         ###   ########.fr       */
+/*   Updated: 2026/03/05 20:10:20 by mstawski         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philophers.h"
 
-/*t_node	ft_create_philosopher(t_data *start_settings, int philosopher_id) //To chyba jest bezsensu
+t_node	ft_create_philosopher(t_data *start_settings, int philosopher_id)
 {
 	t_node	*new_philosopher;
 	
@@ -26,9 +26,9 @@
 	new_philosopher->data->time_to_sleep = start_settings->time_to_sleep; LINKED LIST
 	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
-}*/
+}
 
-/*void	ft_create_table(t_node *table, t_data *start_settings)
+void	ft_create_table(t_node *table, t_data *start_settings)
 {
 	t_node	*head;
 	int	i;
@@ -43,15 +43,6 @@
 	}
 	philosopher->next = (*table)->head;
 	(*table)->head = philosopher;
-}*/
-
-int	ft_create_table(t_data *start_settings, t_philo *table, t_error *error)
-{
-	*table = malloc(sizeof(t_philo) * start_settings->nb_philo);
-	if (*!table)
-		return error->table_creation = 1;
-	table[start_settings->nb_philo] = 0;
-	return (error->table_creation = 0);
 }
 
 int    ft_parsing(t_data *start_settings, char *arguments, t_error &error)
@@ -71,6 +62,18 @@ int    ft_parsing(t_data *start_settings, char *arguments, t_error &error)
 	return (error->parsing = 0);
 }
 
+
+void	ft_initialize_table(t_philo *table, t_data *start_settings)
+{
+
+	int	i;
+
+	i = 0;
+	while (i < start_settings->nb_philo)
+	{
+	}
+}
+
 void	*ft_routine(void *philosopher)
 {
 	while (true)
@@ -88,7 +91,7 @@ int	ft_threads_init(t_data *start_settings, t_philo *table, t_error *error)
 	i = 0;
 	while (i < start_settings->nb_philo)
 	{
-		pthread_create(&table[i]->thread, NULL, ft_routine, &table[i])
+		pthread_create(&table[i]->thread, NULL, ft_routine, &table[i]);
 		i++;
 	}
 }
@@ -101,5 +104,6 @@ int	main(int argc, char *argv[])
 
 	ft_parsing(&start_settings, argv, error);
 	ft_create_table(&table, &start_settings, error);
+	ft_initialize_table(table, start_setting);
 	ft_threads_init(start_setting, table, error);
 }

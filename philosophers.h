@@ -31,4 +31,11 @@ typedef struct s_philo
 	t_data	*data;
 }	t_philo;
 
+typedef struct s_node
+{
+	t_philo	*philosopher;
+	struct s_node	*previous;
+	struct s_node	*next;
+}	t_node;
+
 #endif
