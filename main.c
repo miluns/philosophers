@@ -10,100 +10,191 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philophers.h"
+#include "philosophers.h"
 
-t_node	ft_create_philosopher(t_data *start_settings, int philosopher_id)
+void	ft_assign_right_fork(t_node *philosophers)
+{
+	if (philosophers->next != NULL)
+		philosophers->right_fork = philosophers->next->left_fork;
+}
+
+void	ft_cleanup(t_node *philosophers)
+{
+	while (philosophers && philosophers->id != philosophers->data->nb_philo)
+		philosophers = philosophers->next;
+	philosophers = philosophers->previous;
+	while (philosophers && philosophers->id > 1)
+	{
+		pthread_join(&philosophers->next->thread, NULL);
+		pthread_mutex_destroy(philosophers->next->left_fork);
+		free(philosophers->next);
+		philosophers = philosophers->previous;
+	}
+	if (philosophers->id == 1)
+	{
+		pthread_join(&philosophers->thread, NULL);
+		pthread_mutex_destroy(philosophers->left_fork);
+		free(philosophers);
+	}
+}
+
+/*void	ft_dyi(t_node *philosophers)
+{
+	t_time_log	time;
+
+	gettimeofday(&time.start, NULL);
+
+	usleep(philosophers->philosopher->data->time_to_die * 1000);
+	gettimeofday(&time.end, NULL);
+	time.seconds = end.tv_sec - start.tv_sec;
+	time.microseconds = end.tv_usec - start.tv_usec;
+	time.elapsed = time.seconds + time.microseconds * 1e-6;
+	philosophers->philosopher->data->time_to_die -= time.elapsed;
+	if (philosophers->philosopher->data->time_to_die <= 0)
+		philosophers->philosopher->data->is_alive = false;
+	return ;
+}*/
+
+void	ft_sleeping(t_node *philosophers)
+{
+	t_time_log	time;
+
+
+	gettimeofday(&time.start, NULL);
+	usleep(philosophers->philosopher->data->time_to_sleep * 1000);
+	gettimeofday(&time.end, NULL);
+	time.seconds = end.tv_sec - start.tv_sec;
+	time.microseconds = end.tv_usec - start.tv_usec;
+	time.elapsed = time.seconds + time.microseconds * 1e-6;
+	philosophers->philosopher->data->time_to_die -= time.elapsed;
+	if (philosophers->philosopher->data->time_to_die <= 0)
+		philosophers->philosopher->data->is_alive = false;
+	return ;
+}
+
+void	ft_eating(t_node *philosophers)
+{
+	t_time_log	time;
+
+	gettimeofday(&time.start, NULL);
+	if (!pthread_mutex_lock(philosophers->philosopher->data->last_meal, NULL))
+	{
+		philosophers->philosopher->data->last_meal = time.start;	
+		pthread_mutex_unlock(philosophers->philosopher->data->last_meal, NULL);
+	}
+	usleep(philosophers->philosopher->data->time_to_eat * 1000);
+	gettimeofday(&time.end, NULL);
+	time.seconds = end.tv_sec - start.tv_sec;
+	time.microseconds = end.tv_usec - start.tv_usec;
+	time.elapsed = time.seconds + time.microseconds * 1e-6;
+	philosophers->philosopher->data->time_to_die -= time.elapsed;
+	if (philosophers->philosopher->data->time_to_die <= 0)
+		philosophers->philosopher->data->is_alive = false;
+	return ;
+}
+
+void	ft_philosophers_routine(t_node *philosophers)
+{
+	ft_assign_right_fork(philosophers);
+	while (philosophers->data->is_alive)
+	{
+		if (!pthread_mutex_lock(philosophers->philosopher->left_fork))
+		{
+			pthread_mutex_lock(philosophers->philosopher->right_fork);
+			ft_eating(philosophers);
+			if (pthread_mutex_unlock(philosophers->philosopher->right_fork))
+				return ;
+			if (pthread_mutex_unlock(philosophers->philosopher->left_fork))
+				return ;
+		}
+		ft_sleeping(philosophers); 
+	}
+}
+
+t_node	ft_create_philosopher(t_data *start_settings, int philosopher_id, t_error *error)
 {
 	t_node	*new_philosopher;
-	
+	pthread_mutex_t left_fork;
+	pthread_mutex_t	last_meal;
+
 	new_philospher = malloc(sizeof(t_node));
 	if (!new_philosopher)
 		return (NULL);
 	new_philosopher->id = philosopher_id;
-	new_philosopher->data->nb_philo = start_settings->nb_philo;
-	new_philosopher->data->time_to_die = start_settings->time_to_die;
-	new_philosopher->data->time_to_eat = start_settings->time_to_eat;
-	new_philosopher->data->time_to_sleep = start_settings->time_to_sleep; LINKED LIST
+	new_philosopher->philosopher->data->nb_philo = start_settings->nb_philo;
+	new_philosopher->philosopher->data->time_to_die = start_settings->time_to_die;
+	new_philosopher->philosopher->data->time_to_eat = start_settings->time_to_eat;
+	new_philosopher->philosopher->data->time_to_sleep = start_settings->time_to_sleep;
+	new_philosopher->philosopher->data->is_alive = true;
+	pthread_create(&new_philosopher->philosopher->thread, NULL, ft_philosophers_routine, &new_philosopher);
+	pthread_mutex_init(&left_fork, NULL);
+	pthread_mutex_init(&last_meal, NULL);
+	new_philosopher->left_fork = &left_fork;
+	new_philosopher->right_fork = NULL;
 	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
+	return (new_philosopher);
 }
 
-void	ft_create_table(t_node *table, t_data *start_settings)
+bool	ft_create_table(t_node **philosophers, t_data *start_settings)
 {
-	t_node	*head;
+	t_node	*philosopher;
 	int	i;
 
-	table =
-	(*table)->head = &philosopher;
-	while (i < chairs)
+	philosopher = ft_create_philosopher(start_settings, 1);
+	*philosophers = philosopher;
+	i = 1;
+	while (i <= start_settings->nb_philo)
 	{
-		philosopher->next = create_philopher(++i); LINKED LIST
-		philosopher->previous = philosopher;
+		philosopher->next = create_philopher(start_settings, i + 1);
+		if (philosopher->next == NULL)
+			return (false);
+		philosopher->next->previous = philosopher;
 		philosopher = philosopher->next;
-	}
-	philosopher->next = (*table)->head;
-	(*table)->head = philosopher;
-}
-
-int    ft_parsing(t_data *start_settings, char *arguments, t_error &error)
-{
-	start_settings->nb_philo = ft_atoi(arguments[1]);
-    if (start_settings->nb_philo <= 0)
-        return error->parsing = 1;
-	start_settings->time_to_die = ft_atoi(arguments[2]);
-    if (start_settings->time_to_die <= 0)
-        return error->parsing = 2;
-	start_settings->time_to_eat = ft_atoi(arguments[3]);
-    if (start_settings->time_to_eat <= 0)
-        return error->parsing = 3;
-	start_settings->time_to_sleep = ft_atoi(arguments[4]);
-    if (start_settings->time_to_sleep <= 0)
-        return error->parsing = 4;
-	return (error->parsing = 0);
-}
-
-
-void	ft_initialize_table(t_philo *table, t_data *start_settings)
-{
-
-	int	i;
-
-	i = 0;
-	while (i < start_settings->nb_philo)
-	{
-	}
-}
-
-void	*ft_routine(void *philosopher)
-{
-	while (true)
-	{
-		think();
-		eat();
-		sleep();
-	}
-}
-
-int	ft_threads_init(t_data *start_settings, t_philo *table, t_error *error)
-{
-	int	i;
-
-	i = 0;
-	while (i < start_settings->nb_philo)
-	{
-		pthread_create(&table[i]->thread, NULL, ft_routine, &table[i]);
 		i++;
 	}
+	(*philosophers)->previous = philosopher;
+	return (true);
+}
+
+bool	ft_parsing(t_data *start_settings, char **arguments, t_error *error)
+{
+	start_settings->nb_philo = ft_atoi(arguments[1]);
+    if (start_settings->nb_philo < 0)
+        return false;
+	start_settings->time_to_die = ft_atoi(arguments[2]);
+    if (start_settings->time_to_die < 0)
+        return false;
+	start_settings->time_to_eat = ft_atoi(arguments[3]);
+    if (start_settings->time_to_eat < 0)
+        return false;
+	start_settings->time_to_sleep = ft_atoi(arguments[4]);
+    if (start_settings->time_to_sleep < 0)
+        return false;
+	return (true);
+}
+
+bool	ft_input_validation(char **input)
+{
+	while (*input)
+	{
+		while (**input)
+		{
+			if (**input < 48 && **input > 57)
+				return (false);
+			*input++;
+		}
+		input++;
+	}
+	return (true);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_data	*start_settings;
-	t_philo *table;
-	t_error	*error;
+	t_philo *philosophers;
 
-	ft_parsing(&start_settings, argv, error);
-	ft_create_table(&table, &start_settings, error);
-	ft_initialize_table(table, start_setting);
-	ft_threads_init(start_setting, table, error);
+	ft_input_validation(argv);
+	ft_parsing(&start_settings, argv);
+	ft_create_table(&philosophers, start_settings);
 }
