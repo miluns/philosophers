@@ -8,46 +8,29 @@
 # include <unistd.h>
 # include <sys/time.h>
 
-typedef struct s_time_log
-{
-	struct timeval start;
-	struct timeval end;
-	long seconds;
-	long microseconds;
-	double elapsed;
-}	t_time_log;	
-
-typedef struct s_error
-{
-	int	input_validation;
-	int	parsing;
-	int	create_table;
-}	t_error;
-
 typedef struct s_data
 {
 	int	nb_philo;
-	bool	is_alive;
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
-	pthread_mutex_t	*last_meal;
 }	t_data;
 
 typedef struct s_philo
 {
 	int	id;
+	bool	is_alive;
 	pthread_t	thread;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	t_data	*data;
+	pthread_mutex_t	*fork;
+	t_data	data;
+	struct s_philo	*previous;
+	struct s_philo	*next;
 }	t_philo;
 
-typedef struct s_node
+typedef struct s_monitor
 {
-	t_philo	*philosopher;
-	struct s_node	*previous;
-	struct s_node	*next;
-}	t_node;
+	pthread_t	thread;
+	t_philo	*philosophers;
+}	t_monitor;
 
 #endif
