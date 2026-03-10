@@ -90,7 +90,7 @@ void	ft_eating(t_philo *philosopher)
 	philosopher->last_meal = ft_get_time_in_ms();
 	ft_safe_print(philosopher, "has taken a fork");
 	ft_safe_print(philosopher, "is eating");
-	philosopher->data.spaghetti_turns++;
+	philosopher->data.eating_turns++;
 	ft_usleep(philosopher->data.time_to_eat);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(philosopher->fork);
@@ -122,6 +122,11 @@ void	ft_individual_plan(t_monitor *monitor)
 			monitor->everyone_alive = false;
 			break ;
 		}
+		if (monitor->times_to_eat <= monitor->philosophers->data.eating_turns)
+		{
+			monitor->philosophers->is_alive = false;
+			break ;
+		}
 	}
 }
 
@@ -144,8 +149,12 @@ void	*ft_monitoring_system(void *arg)
 			monitor->everyone_alive = false;
 			break ;
 		}
-		else
-			monitor->philosophers = monitor->philosophers->next;
+		if (monitor->times_to_eat <= monitor->philosophers->data.eating_turns)
+		{
+			monitor->philosophers->is_alive = false;
+			break ;
+		}
+		monitor->philosophers = monitor->philosophers->next;
 	}
 	return (NULL);
 }
@@ -170,7 +179,7 @@ void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers)
 	monitor->time_to_die = philosophers->data.time_to_die;
 	monitor->time_to_eat = philosophers->data.time_to_eat;
 	monitor->time_to_sleep = philosophers->data.time_to_sleep;
-	monitor->spaghetti_turns = philosophers->data.spaghetti_turns;
+	monitor->times_to_eat = philosophers->data.times_to_eat;
 	pthread_create(&monitor->thread, NULL, ft_monitoring_system, monitor);
 }
 
@@ -187,7 +196,8 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id)
 	new_philosopher->data.time_to_die = start_settings.time_to_die;
 	new_philosopher->data.time_to_eat = start_settings.time_to_eat;
 	new_philosopher->data.time_to_sleep = start_settings.time_to_sleep;
-	new_philosopher->data.spaghetti_turns = start_settings.spaghetti_turns;
+	new_philosopher->data.times_to_eat = start_settings.times_to_eat;
+	new_philosopher->data.eating_turns = 0;
 	new_philosopher->is_alive = true;
 	new_philosopher->fork = &fork;
 	new_philosopher->next = NULL;
