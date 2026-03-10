@@ -14,7 +14,8 @@ typedef struct s_data
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
-	size_t	spaghetti_turns;
+	size_t	times_to_eat;
+	size_t	eating_turns;
 }	t_data;
 
 typedef struct s_philo
@@ -37,7 +38,7 @@ typedef struct s_monitor
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
-	size_t	spaghetti_turns;
+	size_t	times_to_eat;
 }	t_monitor;
 
 #endif
