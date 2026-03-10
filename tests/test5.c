@@ -9,6 +9,6 @@ int	main(void)
 	gettimeofday(&tv, NULL);
 	printf("%ld\n", (long)tv.tv_sec);
 	printf("%ld\n", (long)tv.tv_usec);
-	sum = ((long)tv.tv_sec + (long)tv.tv_usec) * 1e-3;
+	sum = ((long)tv.tv_sec * 1000 + (double)tv.tv_usec) / 1000;
 	printf("CORRECT: %.3f \n", sum);
 }

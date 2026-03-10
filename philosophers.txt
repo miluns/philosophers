@@ -1,0 +1,16 @@
+philosophers
+
+Bardzo powoli. Teraz muszę robić wszystko bardzo powoli.
+Skończyłem pisać podstawę, mam stół filozofów i zacząłem z monitorem.
+Zaczynamy tak naprawdę z rutynami.
+
+Zacznijmy od tej monitora.
+Jaka tutaj jest rutynka? On tak naprawdę powtarza swój cykl dopóki wszyscy filozofowie, żyją.
+Spoko, ale on też to kontroluje kto, żyje a kto nie. - On liczy.
+Czyli co on robi od samego początku?
+Okej, on sprawdza cały czas czas obecny - z czasem obecnego posiłku filozofa.
+Czyli zanim zacznie filozof jeść musi zmienić w strukturze czas ostatniego posiłku.
+
+gettimeofday - ustalenia.
+
+

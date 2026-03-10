@@ -27,6 +27,8 @@ int	main(void)
 	pthread_create(&thread1, NULL, deposit, NULL);
 	pthread_create(&thread2, NULL, deposit, NULL);
 
+	printf("LOL\n");
+
 	pthread_join(thread1, NULL);
 	pthread_join(thread2, NULL);
 

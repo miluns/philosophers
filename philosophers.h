@@ -20,6 +20,7 @@ typedef struct s_philo
 {
 	int	id;
 	bool	is_alive;
+	long	last_meal;
 	pthread_t	thread;
 	pthread_mutex_t	*fork;
 	t_data	data;
@@ -31,6 +32,11 @@ typedef struct s_monitor
 {
 	pthread_t	thread;
 	t_philo	*philosophers;
+	pthread_mutex_t	death;
+	bool	everyone_alive;
+	size_t	time_to_die;
+	size_t	time_to_eat;
+	size_t	time_to_sleep;
 }	t_monitor;
 
 #endif
