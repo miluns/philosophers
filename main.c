@@ -51,11 +51,11 @@ void	ft_usleep(long ms)
 		usleep(500);
 }
 
-void	ft_safe_print(t_philo *philosophers, char *str)
+void	ft_safe_print(t_philo *philosopher, char *str)
 {
-	if (!philosophers || !str)
+	if (!philosopher || !str)
 		return ;
-	printf("%ld %d %s\n", ft_get_time_in_ms(), philo->id, str);
+	printf("%ld %d %s\n", ft_get_time_in_ms(), philosopher->id, str);
 }
 
 /*void	ft_dyi(t_node *philosophers)
@@ -75,23 +75,27 @@ void	ft_safe_print(t_philo *philosophers, char *str)
 	return ;
 }*/
 
-void	ft_sleeping(t_philo *philosophers)
+void	ft_sleeping(t_philo *philosopher)
 {
-	ft_safe_print(philosophers, "is sleeping");
-	ft_usleep(philosophers->data.time_to_sleep);
+	ft_safe_print(philosopher, "is sleeping");
+	ft_usleep(philosopher->data.time_to_sleep);
 }
 
-void	ft_eating(t_node *philosophers)
+void	ft_eating(t_philo *philosopher)
 {
-	pthread_mutex_lock(philosophers->fork);
-	pthread_mutex_lock(philosophers->next->fork);
-	philosophers->last_meal = ft_get_time_in_ms();
-	ft_safe_print(philosophers, "has taken a fork");
-	ft_safe_print(philosophers, "is eating");
-	ft_usleep(philosophers->data.time_to_eat);
-	philosophers->last_meal = ft_get_time_in_ms();
-	pthread_mutex_unlock(philosophers->fork);
-	pthread_mutex_unlock(philosophers->next->fork);
+	ft_safe_print(philosopher, "is thinking");
+	pthread_mutex_lock(philosopher->fork);
+	if (philosopher->data.nb_philo > 1)
+		pthread_mutex_lock(philosopher->next->fork);
+	philosopher->last_meal = ft_get_time_in_ms();
+	ft_safe_print(philosopher, "has taken a fork");
+	ft_safe_print(philosopher, "is eating");
+	philosopher->data.spaghetti_turns++;
+	ft_usleep(philosopher->data.time_to_eat);
+	philosopher->last_meal = ft_get_time_in_ms();
+	pthread_mutex_unlock(philosopher->fork);
+	if (philosopher->data.nb_philo > 1)
+		pthread_mutex_unlock(philosopher->next->fork);
 }
 
 void	*ft_philosophers_routine(void *arg)
@@ -107,14 +111,33 @@ void	*ft_philosophers_routine(void *arg)
 	return (NULL);
 }
 
+void	ft_individual_plan(t_monitor *monitor)
+{
+	while (1)
+	{
+		if (get_time_in_ms() - monitor->philosophers->last_meal > (long)monitor->time_to_die) 
+		{
+			ft_safe_print(monitor->philosophers, "died");
+			monitor->philosophers->is_alive = false;
+			monitor->everyone_alive = false;
+			break ;
+		}
+	}
+}
+
 void	*ft_monitoring_system(void *arg)
 {
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
+	if (monitor->philosophers->data.nb_philo == 1)
+	{
+		ft_individual_plan(monitor);
+		return (NULL);
+	}
 	while (1)
 	{
-		if (get_time_in_ms() - monitor->philosophers->last_meal > (long)time_to_die) 
+		if (get_time_in_ms() - monitor->philosophers->last_meal > (long)monitor->time_to_die) 
 		{
 			ft_safe_print(monitor->philosophers, "died");
 			monitor->philosophers->is_alive = false;
@@ -147,7 +170,7 @@ void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers)
 	monitor->time_to_die = philosophers->data.time_to_die;
 	monitor->time_to_eat = philosophers->data.time_to_eat;
 	monitor->time_to_sleep = philosophers->data.time_to_sleep;
-	pthread_mutex_init(monitor->death, NULL);
+	monitor->spaghetti_turns = philosophers->data.spaghetti_turns;
 	pthread_create(&monitor->thread, NULL, ft_monitoring_system, monitor);
 }
 
@@ -164,6 +187,7 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id)
 	new_philosopher->data.time_to_die = start_settings.time_to_die;
 	new_philosopher->data.time_to_eat = start_settings.time_to_eat;
 	new_philosopher->data.time_to_sleep = start_settings.time_to_sleep;
+	new_philosopher->data.spaghetti_turns = start_settings.spaghetti_turns;
 	new_philosopher->is_alive = true;
 	new_philosopher->fork = &fork;
 	new_philosopher->next = NULL;
@@ -179,6 +203,8 @@ bool	ft_create_table(t_philo **philosophers, t_data start_settings)
 
 	philosopher = ft_create_philosopher(start_settings, 1);
 	*philosophers = philosopher;
+	if (start_settings.nb_philo == 1)
+		return (true);
 	i = 1;
 	while (i <= start_settings.nb_philo)
 	{
@@ -189,7 +215,8 @@ bool	ft_create_table(t_philo **philosophers, t_data start_settings)
 		philosopher = philosopher->next;
 		i++;
 	}
-	(*philosophers)->previous = philosopher;
+	if (start_settings.nb_philo > 1)
+		(*philosophers)->previous = philosopher;
 	return (true);
 }
 
@@ -206,6 +233,9 @@ bool	ft_parsing(t_data *start_settings, char **arguments)
         return false;
 	start_settings->time_to_sleep = ft_atoi(arguments[4]);
     if (start_settings->time_to_sleep < 0)
+        return false;
+	start_settings->spaghetti_turns = ft_atoi(arguments[5]);
+	if (start_settings->spaghetti_turns < 0)
         return false;
 	return (true);
 }

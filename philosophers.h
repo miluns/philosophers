@@ -14,6 +14,7 @@ typedef struct s_data
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
+	size_t	spaghetti_turns;
 }	t_data;
 
 typedef struct s_philo
@@ -32,11 +33,11 @@ typedef struct s_monitor
 {
 	pthread_t	thread;
 	t_philo	*philosophers;
-	pthread_mutex_t	death;
 	bool	everyone_alive;
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
+	size_t	spaghetti_turns;
 }	t_monitor;
 
 #endif

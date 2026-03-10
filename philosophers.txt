@@ -1,3 +1,4 @@
+
 philosophers
 
 Bardzo powoli. Teraz muszę robić wszystko bardzo powoli.
@@ -13,4 +14,13 @@ Czyli zanim zacznie filozof jeść musi zmienić w strukturze czas ostatniego po
 
 gettimeofday - ustalenia.
 
+No dobra,
+rutynka tak naprawdę jest już dobra.
+Mi się wydaje, że on powinien myśleć zanim zacznie jeść.
+No dobra, no i co dalej?
+
+Pytania do Alexandrosa:
+
+na chuj Ci mutex'y inne niż widelec sąsiada?
+na chuj jest ten if ze śmiercią wszędzie?
 
