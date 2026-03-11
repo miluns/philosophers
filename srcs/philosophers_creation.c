@@ -5,7 +5,7 @@ void	ft_create_philosophers_threads(t_philo *philosophers)
 	int	i;
 
 	i = 0;
-	while (i < philosophers->data.nb_philo)
+	while (i < philosophers->data.number_of_philosophers)
 	{
 		pthread_create(&philosophers->thread, NULL, ft_philosophers_routine, &philosophers);
 		philosophers = philosophers->next;
@@ -22,7 +22,7 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id)
 	if (!new_philosopher)
 		return (NULL);
 	new_philosopher->id = philosopher_id;
-	new_philosopher->data.nb_philo = start_settings.nb_philo;
+	new_philosopher->data.number_of_philosophers = start_settings.number_of_philosophers;
 	new_philosopher->data.time_to_die = start_settings.time_to_die;
 	new_philosopher->data.time_to_eat = start_settings.time_to_eat;
 	new_philosopher->data.time_to_sleep = start_settings.time_to_sleep;
@@ -43,10 +43,10 @@ bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings)
 
 	philosopher = ft_create_philosopher(start_settings, 1);
 	*philosophers = philosopher;
-	if (start_settings.nb_philo == 1)
+	if (start_settings.number_of_philosophers == 1)
 		return (true);
 	i = 1;
-	while (i <= start_settings.nb_philo)
+	while (i <= start_settings.number_of_philosophers)
 	{
 		philosopher->next = create_philopher(start_settings, i + 1);
 		if (philosopher->next == NULL)
@@ -55,7 +55,6 @@ bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings)
 		philosopher = philosopher->next;
 		i++;
 	}
-	if (start_settings.nb_philo > 1)
-		(*philosophers)->previous = philosopher;
+	(*philosophers)->previous = philosopher;
 	return (true);
 }

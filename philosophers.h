@@ -10,7 +10,7 @@
 
 typedef struct s_data
 {
-	int	nb_philo;
+	size_t	number_of_philosophers;
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
@@ -34,11 +34,12 @@ typedef struct s_monitor
 {
 	pthread_t	thread;
 	t_philo	*philosophers;
-	bool	everyone_alive;
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
 	size_t	times_to_eat;
+	size_t	number_of_philosophers;
+	size_t	stuffed_philosophers;
 }	t_monitor;
 
 bool	ft_input_validation(char **input);

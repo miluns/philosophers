@@ -18,10 +18,15 @@ int	main(int argc, char *argv[])
 	t_monitor	monitor;
 	t_philo	*philosophers;
 
-	ft_input_validation(argv);
-	ft_parsing(&start_settings, argv);
-	ft_create_table(&philosophers, start_settings);
-	ft_create_monitoring_system(&monitor, philosophers);
-	ft_create_monitoring_system_thread(&monitor);
-	ft_create_philosophers_threads(philosophers);
+	if (ft_input_validation(argv))
+		if (ft_parsing(&start_settings, argv))
+			if(ft_create_philosophers_table(&philosophers, start_settings))
+			{
+				ft_create_monitoring_system(&monitor, philosophers);
+				ft_create_monitoring_system_thread(&monitor);
+				ft_create_philosophers_threads(philosophers);
+			}
+			ft_cleanup(philosophers);
+
+	return (1);
 }
