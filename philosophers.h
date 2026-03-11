@@ -41,4 +41,29 @@ typedef struct s_monitor
 	size_t	times_to_eat;
 }	t_monitor;
 
+bool	ft_input_validation(char **input);
+bool	ft_parsing(t_data *start_settings, char **arguments);
+
+bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings);
+t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id);
+void	ft_create_philosophers_threads(t_philo *philosophers);
+
+void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers);
+void	ft_create_monitoring_system_thread(t_monitor *monitor);
+
+void	*ft_monitoring_system(void *arg);
+void	ft_monitoring_system_individual_plan(t_monitor *monitor);
+
+void    *ft_philosophers_routine(void *arg);
+void    ft_eating(t_philo *philosopher);
+void    ft_sleeping(t_philo *philosopher);
+
+long	get_time_in_ms(void);
+void	ft_usleep(long ms);
+void	ft_safe_print(t_philo *philosopher, char *str);
+
+void	ft_cleanup(t_philo *philosophers);
+
+int	ft_philo_atoi(const char *nptr);
+
 #endif
