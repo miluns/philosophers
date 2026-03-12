@@ -1,6 +1,6 @@
 #include "../philosophers.h"
 
-long	get_time_in_ms(void)
+long	ft_get_time_in_ms(void)
 {
 	struct timeval	time;
 	

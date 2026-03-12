@@ -18,8 +18,11 @@ int	main(int argc, char *argv[])
 	t_monitor	monitor;
 	t_philo	*philosophers;
 
-	if (ft_input_validation(argv))
+	if (ft_input_validation(argc, argv))
+	{
+		philosophers = NULL;
 		if (ft_parsing(&start_settings, argv))
+		{
 			if(ft_create_philosophers_table(&philosophers, start_settings))
 			{
 				ft_create_monitoring_system(&monitor, philosophers);
@@ -27,6 +30,7 @@ int	main(int argc, char *argv[])
 				ft_create_philosophers_threads(philosophers);
 			}
 			ft_cleanup(philosophers);
-
+		}
+	}
 	return (1);
 }

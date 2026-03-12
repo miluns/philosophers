@@ -16,7 +16,6 @@ void	ft_create_philosophers_threads(t_philo *philosophers)
 t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id)
 {
 	t_philo	*new_philosopher;
-	pthread_mutex_t fork;
 
 	new_philosopher = malloc(sizeof(t_philo));
 	if (!new_philosopher)
@@ -29,10 +28,9 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id)
 	new_philosopher->data.times_to_eat = start_settings.times_to_eat;
 	new_philosopher->data.eating_turns = 0;
 	new_philosopher->is_alive = true;
-	new_philosopher->fork = &fork;
-	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
-	pthread_mutex_init(&fork, NULL);
+	new_philosopher->next = NULL;
+	pthread_mutex_init(&new_philosopher->fork, NULL);
 	return (new_philosopher);
 }
 
@@ -48,7 +46,7 @@ bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings)
 	i = 1;
 	while (i <= start_settings.number_of_philosophers)
 	{
-		philosopher->next = create_philopher(start_settings, i + 1);
+		philosopher->next = ft_create_philosopher(start_settings, i + 1);
 		if (philosopher->next == NULL)
 			return (false);
 		philosopher->next->previous = philosopher;
