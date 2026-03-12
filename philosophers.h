@@ -21,10 +21,13 @@ typedef struct s_data
 typedef struct s_philo
 {
 	int	id;
-	bool	is_alive;
+	int	*everyone_alive;
 	long	last_meal;
 	pthread_t	thread;
 	pthread_mutex_t	fork;
+	pthread_mutex_t	eating;
+	pthread_mutex_t *death;
+	pthread_mutex_t *print;
 	t_data	data;
 	struct s_philo	*previous;
 	struct s_philo	*next;
@@ -34,6 +37,7 @@ typedef struct s_monitor
 {
 	pthread_t	thread;
 	t_philo	*philosophers;
+	int	everyone_alive;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
@@ -45,9 +49,9 @@ typedef struct s_monitor
 bool	ft_input_validation(int arg, char **input);
 bool	ft_parsing(t_data *start_settings, char **arguments);
 
-bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings);
-t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id);
-void	ft_create_philosophers_threads(t_philo *philosophers);
+bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings, pthread_mutex_t *global_mutexes);
+t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id, pthread_mutex_t *global_mutexes);
+void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor);
 
 void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers);
 void	ft_create_monitoring_system_thread(t_monitor *monitor);

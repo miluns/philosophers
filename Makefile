@@ -1,6 +1,6 @@
-NAME = philosophers
+NAME = philo
 
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra -g
 LIB = philosophers.h
 
 srcs_dir = srcs

@@ -22,17 +22,22 @@ bool	ft_parsing(t_data *start_settings, char **arguments)
 
 bool	ft_input_validation(int argc, char **input)
 {
+	int	i;
+	int	j;
+
 	if (argc < 5 || argc > 6)
 		return (false);
-	while (*input)
+	i = 0;
+	j = 0;
+	while (input[i])
 	{
-		while (**input)
+		while (input[i][j])
 		{
-			if (**input < 48 && **input > 57)
+			if (input[i][j] < 48 && input[i][j] > 57)
 				return (false);
-			(*input)++;
+			j++;
 		}
-		input++;
+		i++;
 	}
 	return (true);
 }

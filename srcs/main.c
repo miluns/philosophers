@@ -17,17 +17,18 @@ int	main(int argc, char *argv[])
 	t_data	start_settings;
 	t_monitor	monitor;
 	t_philo	*philosophers;
+	pthread_mutex_t global_mutexes[2];
 
 	if (ft_input_validation(argc, argv))
 	{
 		philosophers = NULL;
 		if (ft_parsing(&start_settings, argv))
 		{
-			if(ft_create_philosophers_table(&philosophers, start_settings))
+			if(ft_create_philosophers_table(&philosophers, start_settings, global_mutexes))
 			{
 				ft_create_monitoring_system(&monitor, philosophers);
 				ft_create_monitoring_system_thread(&monitor);
-				ft_create_philosophers_threads(philosophers);
+				ft_create_philosophers_threads(philosophers, &monitor);
 			}
 			ft_cleanup(philosophers);
 		}
