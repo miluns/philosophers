@@ -49,6 +49,8 @@ typedef struct s_monitor
 bool	ft_input_validation(int arg, char **input);
 bool	ft_parsing(t_data *start_settings, char **arguments);
 
+void	ft_initialize_global_mutexes(pthread_mutex_t *global_mutexes);
+
 bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings, pthread_mutex_t *global_mutexes);
 t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id, pthread_mutex_t *global_mutexes);
 void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor);
@@ -67,10 +69,8 @@ long	ft_get_time_in_ms(void);
 void	ft_usleep(long ms);
 void	ft_safe_print(t_philo *philosopher, char *str);
 
-void	ft_thread_joining(t_monitor *monitor, t_philo *philosophers);
-void	ft_cleanup(t_philo *philosophers);
+void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes);
 
-void	ft_initialize_global_mutexes(pthread_mutex_t *global_mutexes);
 void	ft_print_philosophers_table(t_philo *philosophers);
 int	ft_philo_atoi(const char *nptr);
 

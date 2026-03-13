@@ -27,13 +27,11 @@ int	main(int argc, char *argv[])
 			ft_initialize_global_mutexes(global_mutexes);
 			if(ft_create_philosophers_table(&philosophers, start_settings, global_mutexes))
 			{
-				ft_print_philosophers_table(philosophers);
 				ft_create_monitoring_system(&monitor, philosophers);
 				ft_create_monitoring_system_thread(&monitor);
 				ft_create_philosophers_threads(philosophers, &monitor);
 			}
-			ft_thread_joining(&monitor, philosophers);
-			ft_cleanup(philosophers);
+			ft_cleanup(&monitor, philosophers, global_mutexes);
 		}
 	}
 	return (1);

@@ -1,20 +1,17 @@
 #include "../philosophers.h"
 
-void	ft_thread_joining(t_monitor *monitor, t_philo *philosopers)
+void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes)
 {
-	int	i;
-
+	pthread_mutex_destroy(&global_mutexes[0]);
+	pthread_mutex_destroy(&global_mutexes[1]);
 	pthread_join(monitor->thread, NULL);
-	i = 0;
-	while (i < philosopers->data.number_of_philosophers)
+	if (philosophers->data.number_of_philosophers == 1)
 	{
-		pthread_join(philosopers->thread, NULL);
-		i++;
+		pthread_join(philosophers->thread, NULL);
+		pthread_mutex_destroy(&philosophers->fork);
+		pthread_mutex_destroy(&philosophers->eating);
+		free(philosophers);
 	}
-}
-
-void	ft_cleanup(t_philo *philosophers)
-{
 	while (philosophers && philosophers->id != philosophers->data.number_of_philosophers)
 		philosophers = philosophers->next;
 	philosophers = philosophers->previous;
@@ -22,6 +19,7 @@ void	ft_cleanup(t_philo *philosophers)
 	{
 		pthread_join(philosophers->next->thread, NULL);
 		pthread_mutex_destroy(&philosophers->next->fork);
+		pthread_mutex_destroy(&philosophers->next->eating);
 		free(philosophers->next);
 		philosophers = philosophers->previous;
 	}
@@ -29,6 +27,7 @@ void	ft_cleanup(t_philo *philosophers)
 	{
 		pthread_join(philosophers->thread, NULL);
 		pthread_mutex_destroy(&philosophers->fork);
+		pthread_mutex_destroy(&philosophers->eating);
 		free(philosophers);
 	}
 }

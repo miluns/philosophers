@@ -5,7 +5,6 @@ void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor)
 	int	i;
 
 	i = 0;
-	printf("furious at this point\n");
 	while (i < philosophers->data.number_of_philosophers)
 	{
 		philosophers->everyone_alive = &monitor->everyone_alive;
@@ -59,6 +58,7 @@ bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings,
 		philosopher = philosopher->next;
 		i++;
 	}
+	philosopher->next = *philosophers;
 	(*philosophers)->previous = philosopher;
 	return (true);
 }

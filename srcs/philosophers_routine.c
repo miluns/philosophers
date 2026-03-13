@@ -80,8 +80,11 @@ void	*ft_philosophers_routine(void *arg)
 	t_philo *philosopher;
 
 	philosopher = (t_philo *)arg;
+	pthread_mutex_lock(&philosopher->eating);
+	philosopher->last_meal = ft_get_time_in_ms();
+	pthread_mutex_unlock(&philosopher->eating);
 	if (philosopher->id % 2 != 0)
-		usleep(50);
+		usleep(500);
 	while (1)
 	{
 		pthread_mutex_lock(philosopher->death);
