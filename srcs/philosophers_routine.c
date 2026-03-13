@@ -56,6 +56,8 @@ void	ft_eating(t_philo *philosopher)
 		{
 			pthread_mutex_unlock(philosopher->death);
 			pthread_mutex_unlock(&philosopher->fork);
+			if (philosopher->data.number_of_philosophers > 1)
+				pthread_mutex_lock(&philosopher->next->fork);
 		}
 	}
 	else

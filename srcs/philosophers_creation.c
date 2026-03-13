@@ -5,6 +5,12 @@ void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor)
 	int	i;
 
 	i = 0;
+	if (philosophers->data.number_of_philosophers == 1)
+	{
+		philosophers->everyone_alive = &monitor->everyone_alive;
+		pthread_create(&philosophers->thread, NULL, ft_philosophers_routine, philosophers);
+		return ;
+	}
 	while (i < philosophers->data.number_of_philosophers)
 	{
 		philosophers->everyone_alive = &monitor->everyone_alive;
