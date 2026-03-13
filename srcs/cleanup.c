@@ -1,5 +1,18 @@
 #include "../philosophers.h"
 
+void	ft_thread_joining(t_monitor *monitor, t_philo *philosopers)
+{
+	int	i;
+
+	pthread_join(monitor->thread, NULL);
+	i = 0;
+	while (i < philosopers->data.number_of_philosophers)
+	{
+		pthread_join(philosopers->thread, NULL);
+		i++;
+	}
+}
+
 void	ft_cleanup(t_philo *philosophers)
 {
 	while (philosophers && philosophers->id != philosophers->data.number_of_philosophers)

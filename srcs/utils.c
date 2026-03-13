@@ -22,3 +22,23 @@ int	ft_philo_atoi(const char *nptr)
 		return (numb * (-1));
 	return (numb);
 }
+
+void	ft_initialize_global_mutexes(pthread_mutex_t *global_mutexes)
+{
+	pthread_mutex_init(&global_mutexes[0], NULL);
+	pthread_mutex_init(&global_mutexes[1], NULL);
+}
+
+void	ft_print_philosophers_table(t_philo *philosophers)
+{
+	int	i;
+
+	i = 0;
+	while (i < philosophers->data.number_of_philosophers)
+	{
+		printf("ITERATION: %i\n%p	philo->id: %i\nphilo->next addr: %p\n",i, philosophers, philosophers->id, philosophers->next);
+		i++;
+		philosophers = philosophers->next;
+	}
+	printf("LIST PRINTED\n");
+}

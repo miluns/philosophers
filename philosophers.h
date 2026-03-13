@@ -67,8 +67,11 @@ long	ft_get_time_in_ms(void);
 void	ft_usleep(long ms);
 void	ft_safe_print(t_philo *philosopher, char *str);
 
+void	ft_thread_joining(t_monitor *monitor, t_philo *philosophers);
 void	ft_cleanup(t_philo *philosophers);
 
+void	ft_initialize_global_mutexes(pthread_mutex_t *global_mutexes);
+void	ft_print_philosophers_table(t_philo *philosophers);
 int	ft_philo_atoi(const char *nptr);
 
 #endif

@@ -5,6 +5,7 @@ void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor)
 	int	i;
 
 	i = 0;
+	printf("furious at this point\n");
 	while (i < philosophers->data.number_of_philosophers)
 	{
 		philosophers->everyone_alive = &monitor->everyone_alive;
@@ -35,6 +36,7 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id, pthrea
 	new_philosopher->previous = NULL;
 	new_philosopher->next = NULL;
 	pthread_mutex_init(&new_philosopher->fork, NULL);
+	pthread_mutex_init(&new_philosopher->eating, NULL);
 	return (new_philosopher);
 }
 
@@ -48,7 +50,7 @@ bool	ft_create_philosophers_table(t_philo **philosophers, t_data start_settings,
 	if (start_settings.number_of_philosophers == 1)
 		return (true);
 	i = 1;
-	while (i <= start_settings.number_of_philosophers)
+	while (i < start_settings.number_of_philosophers)
 	{
 		philosopher->next = ft_create_philosopher(start_settings, i + 1, global_mutexes);
 		if (philosopher->next == NULL)
