@@ -30,27 +30,24 @@ void	ft_eating(t_philo *philosopher)
 	pthread_mutex_lock(&philosopher->eating);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(&philosopher->eating);
+	pthread_mutex_lock(&philosopher->fork);
 	pthread_mutex_lock(philosopher->death);
 	if (*philosopher->everyone_alive)
 	{
 		pthread_mutex_unlock(philosopher->death);
-		pthread_mutex_lock(&philosopher->fork);
 		ft_safe_print(philosopher, "has taken a fork");
-		if (philosopher->data.number_of_philosophers > 1)
+		pthread_mutex_lock(philosopher->death);
+		if (*philosopher->everyone_alive)
 		{
-			pthread_mutex_lock(philosopher->death);
-			if (*philosopher->everyone_alive)
-			{
-				pthread_mutex_unlock(philosopher->death);
-				pthread_mutex_lock(&philosopher->next->fork);
-				ft_safe_print(philosopher, "has taken a fork");
-			}
-			else
-			{
-				pthread_mutex_unlock(philosopher->death);
-				pthread_mutex_unlock(&philosopher->fork);
-				return ;
-			}
+			pthread_mutex_unlock(philosopher->death);
+			pthread_mutex_lock(&philosopher->next->fork);
+			ft_safe_print(philosopher, "has taken a fork");
+		}
+		else
+		{
+			pthread_mutex_unlock(philosopher->death);
+			pthread_mutex_unlock(&philosopher->fork);
+			return ;
 		}
 		pthread_mutex_lock(philosopher->death);
 		if (*philosopher->everyone_alive)
@@ -61,24 +58,25 @@ void	ft_eating(t_philo *philosopher)
 			pthread_mutex_unlock(&philosopher->eating);
 			ft_safe_print(philosopher, "is eating");
 			ft_usleep(philosopher->data.time_to_eat);
+			pthread_mutex_unlock(&philosopher->fork);
+			pthread_mutex_unlock(&philosopher->next->fork);
 			pthread_mutex_lock(&philosopher->eating);
 			if (philosopher->data.times_to_eat > -1)
 				philosopher->data.eating_turns++;
 			pthread_mutex_unlock(&philosopher->eating);
-			pthread_mutex_unlock(&philosopher->fork);
-			if (philosopher->data.number_of_philosophers > 1)
-				pthread_mutex_unlock(&philosopher->next->fork);
 		}
 		else
 		{
 			pthread_mutex_unlock(philosopher->death);
 			pthread_mutex_unlock(&philosopher->fork);
-			if (philosopher->data.number_of_philosophers > 1)
-				pthread_mutex_unlock(&philosopher->next->fork);
+			pthread_mutex_unlock(&philosopher->next->fork);
 		}
 	}
 	else
-			pthread_mutex_unlock(philosopher->death);
+	{
+		pthread_mutex_unlock(philosopher->death);
+		pthread_mutex_unlock(&philosopher->fork);
+	}
 }
 
 void	ft_sleeping(t_philo *philosopher)
