@@ -23,6 +23,22 @@ void	ft_safe_print(t_philo *philosopher, char *str)
 {
 	if (!philosopher || !str)
 		return ;
+	pthread_mutex_lock(philosopher->death);
+	if (*philosopher->everyone_alive)
+	{
+		pthread_mutex_unlock(philosopher->death);
+		pthread_mutex_lock(philosopher->print);
+		printf("%ld %d %s\n", ft_get_time_in_ms(), philosopher->id, str);
+		pthread_mutex_unlock(philosopher->print);
+	}
+	else
+		pthread_mutex_unlock(philosopher->death);
+}
+
+void	ft_safe_print_monitor(t_philo *philosopher, char *str)
+{
+	if (!philosopher || !str)
+		return ;
 	pthread_mutex_lock(philosopher->print);
 	printf("%ld %d %s\n", ft_get_time_in_ms(), philosopher->id, str);
 	pthread_mutex_unlock(philosopher->print);

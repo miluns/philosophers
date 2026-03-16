@@ -21,7 +21,9 @@ typedef struct s_data
 typedef struct s_philo
 {
 	int	id;
+	int	stuffed;
 	int	*everyone_alive;
+	int	*stuffed_philosophers;
 	long	last_meal;
 	pthread_t	thread;
 	pthread_mutex_t	fork;
@@ -62,16 +64,21 @@ void	*ft_monitoring_system(void *arg);
 void	*ft_monitoring_system_individual_plan(void *arg);
 
 void    *ft_philosophers_routine(void *arg);
+void	*ft_single_philosopher_routine(void *arg);
+void	ft_thinking(t_philo *philosophers);
 void    ft_eating(t_philo *philosopher);
 void    ft_sleeping(t_philo *philosopher);
 
 long	ft_get_time_in_ms(void);
 void	ft_usleep(long ms);
 void	ft_safe_print(t_philo *philosopher, char *str);
+void	ft_safe_print_monitor(t_philo *philosopher, char *str);
 
 void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes);
 
 void	ft_print_philosophers_table(t_philo *philosophers);
+void	ft_print_start_settings(t_data start_settings);
 int	ft_philo_atoi(const char *nptr);
+int	ft_check_times_eaten(t_philo *philosophers);
 
 #endif

@@ -8,12 +8,13 @@ void	ft_create_philosophers_threads(t_philo *philosophers, t_monitor *monitor)
 	if (philosophers->data.number_of_philosophers == 1)
 	{
 		philosophers->everyone_alive = &monitor->everyone_alive;
-		pthread_create(&philosophers->thread, NULL, ft_philosophers_routine, philosophers);
+		pthread_create(&philosophers->thread, NULL, ft_single_philosopher_routine, philosophers);
 		return ;
 	}
 	while (i < philosophers->data.number_of_philosophers)
 	{
 		philosophers->everyone_alive = &monitor->everyone_alive;
+		philosophers->stuffed_philosophers = &monitor->stuffed_philosophers;
 		pthread_create(&philosophers->thread, NULL, ft_philosophers_routine, philosophers);
 		philosophers = philosophers->next;
 		i++;
@@ -28,7 +29,9 @@ t_philo	*ft_create_philosopher(t_data start_settings, int philosopher_id, pthrea
 	if (!new_philosopher)
 		return (NULL);
 	new_philosopher->id = philosopher_id;
+	new_philosopher->stuffed = 0;
 	new_philosopher->everyone_alive = NULL;
+	new_philosopher->stuffed_philosophers = NULL;
 	new_philosopher->last_meal = 0;
 	new_philosopher->death = &global_mutexes[0];
 	new_philosopher->print = &global_mutexes[1];

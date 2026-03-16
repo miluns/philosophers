@@ -42,3 +42,12 @@ void	ft_print_philosophers_table(t_philo *philosophers)
 	}
 	printf("LIST PRINTED\n");
 }
+
+void	ft_print_start_settings(t_data start_settings)
+{
+	printf("NUMBER OF PHILOS: %i\n", start_settings.number_of_philosophers);
+	printf("TIME TO DIE: %i\n", start_settings.time_to_die);
+	printf("TIME TO EAT: %i\n", start_settings.time_to_eat);
+	printf("TIME TO SLEEP: %i\n", start_settings.time_to_sleep);
+	printf("TIMES TO EAT: %i\n", start_settings.times_to_eat);
+}

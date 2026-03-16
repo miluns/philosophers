@@ -13,7 +13,7 @@ void	*ft_monitoring_system_individual_plan(void *arg)
 		if (ft_get_time_in_ms() - monitor->philosophers->last_meal > (long)monitor->time_to_die) 
 		{
 			pthread_mutex_lock(monitor->philosophers->death);
-			ft_safe_print(monitor->philosophers, "died");
+			ft_safe_print_monitor(monitor->philosophers, "died");
 			monitor->everyone_alive = 0;
 			pthread_mutex_unlock(monitor->philosophers->death);
 			pthread_mutex_unlock(&monitor->philosophers->eating);
@@ -49,16 +49,18 @@ void	*ft_monitoring_system(void *arg)
 		{
 			pthread_mutex_lock(monitor->philosophers->death);
 			monitor->everyone_alive = 0;
-			ft_safe_print(monitor->philosophers, "died");
+			ft_safe_print_monitor(monitor->philosophers, "died");
 			pthread_mutex_unlock(monitor->philosophers->death);
 			pthread_mutex_unlock(&monitor->philosophers->eating);
 			break ;
 		}
 		if (monitor->times_to_eat > 0)
 		{
-			if (monitor->philosophers->data.eating_turns >= monitor->times_to_eat)
+			if (monitor->philosophers->data.eating_turns == monitor->times_to_eat)
 			{
-				monitor->stuffed_philosophers++;
+				if (!monitor->philosophers->stuffed)
+					monitor->stuffed_philosophers++;
+				monitor->philosophers->stuffed = 1;
 				if (monitor->stuffed_philosophers == monitor->number_of_philosophers)
 				{
 					pthread_mutex_lock(monitor->philosophers->death);
