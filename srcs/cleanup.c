@@ -53,9 +53,8 @@ void	ft_mutexes_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex
 	pthread_mutex_destroy(&global_mutexes[1]);
 }
 
-void	ft_memory_cleanup(t_monitor *monitor, t_philo *philosophers)
+void	ft_memory_cleanup(t_philo *philosophers)
 {
-	free(monitor);
 	if (philosophers->data.number_of_philosophers == 1)
 		free(philosophers);	
 	else
@@ -80,5 +79,5 @@ void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *glob
 {
 	ft_thread_cleanup(monitor, philosophers);
 	ft_mutexes_cleanup(monitor, philosophers, global_mutexes);
-	ft_memory_cleanup(monitor, philosophers);
+	ft_memory_cleanup(philosophers);
 }

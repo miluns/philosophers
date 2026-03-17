@@ -64,7 +64,7 @@ void	ft_take_neighbors_fork(t_philo *philosophers)
 	if (*philosophers->everyone_alive)
 	{
 		pthread_mutex_unlock(philosophers->death);
-		ft_safe_print(philosophers, "has taken neighbor's fork");
+		ft_safe_print(philosophers, "has taken a fork");
 	}
 	else
 		pthread_mutex_unlock(philosophers->death);
