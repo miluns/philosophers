@@ -68,6 +68,11 @@ void	*ft_single_philosopher_routine(void *arg);
 void	ft_thinking(t_philo *philosophers);
 void    ft_eating(t_philo *philosopher);
 void    ft_sleeping(t_philo *philosopher);
+void	ft_take_your_fork(t_philo *philosopher);
+void	ft_take_neighbors_fork(t_philo *philosophers);
+void	ft_eat_and_release_forks(t_philo *philosophers);
+void	ft_release_forks(t_philo *philosophers);
+
 
 long	ft_get_time_in_ms(void);
 void	ft_usleep(long ms);

@@ -23,7 +23,10 @@ void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *glob
 		philosophers = philosophers->previous;
 	}
 	if (philosophers->id == 1)
-	{
+	{	
+		pthread_join(philosophers->next->thread, NULL);
+		pthread_mutex_destroy(&philosophers->next->fork);
+		pthread_mutex_destroy(&philosophers->next->eating);
 		pthread_join(philosophers->thread, NULL);
 		pthread_mutex_destroy(&philosophers->fork);
 		pthread_mutex_destroy(&philosophers->eating);

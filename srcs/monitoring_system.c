@@ -5,7 +5,7 @@ void	*ft_monitoring_system_individual_plan(void *arg)
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
-	usleep(2000);
+	usleep(100);
 	while (1)
 	{
 
@@ -41,7 +41,7 @@ void	*ft_monitoring_system(void *arg)
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
-	usleep(2000);	
+	usleep(100);	
 	while (1)
 	{
 		pthread_mutex_lock(&monitor->philosophers->eating);

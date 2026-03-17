@@ -27,6 +27,22 @@ void	ft_lonely_eating(t_philo *philosopher)
 
 void	ft_eating(t_philo *philosopher)
 {
+	if (philosopher->id % 2 == 0)
+	{
+		ft_take_your_fork(philosopher);
+		ft_take_neighbors_fork(philosopher);
+		ft_eat_and_release_forks(philosopher);
+	}
+	else
+	{
+		ft_take_neighbors_fork(philosopher);
+		ft_take_your_fork(philosopher);
+		ft_eat_and_release_forks(philosopher);
+	}
+}
+
+/*void	ft_eating(t_philo *philosopher)
+{
 	pthread_mutex_lock(&philosopher->eating);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(&philosopher->eating);
@@ -40,7 +56,7 @@ void	ft_eating(t_philo *philosopher)
 		if (*philosopher->everyone_alive)
 		{
 			pthread_mutex_unlock(philosopher->death);
-			pthread_mutex_lock(&philosopher->next->fork);
+			pthread_mutex_lock(&philosopher->previous->fork);
 			ft_safe_print(philosopher, "has taken a fork");
 		}
 		else
@@ -59,7 +75,7 @@ void	ft_eating(t_philo *philosopher)
 			ft_safe_print(philosopher, "is eating");
 			ft_usleep(philosopher->data.time_to_eat);
 			pthread_mutex_unlock(&philosopher->fork);
-			pthread_mutex_unlock(&philosopher->next->fork);
+			pthread_mutex_unlock(&philosopher->previous->fork);
 			pthread_mutex_lock(&philosopher->eating);
 			if (philosopher->data.times_to_eat > -1)
 				philosopher->data.eating_turns++;
@@ -69,14 +85,14 @@ void	ft_eating(t_philo *philosopher)
 		{
 			pthread_mutex_unlock(philosopher->death);
 			pthread_mutex_unlock(&philosopher->fork);
-			pthread_mutex_unlock(&philosopher->next->fork);
+			pthread_mutex_unlock(&philosopher->previous->fork);
 		}
 	}
 	else
 	{
 		pthread_mutex_unlock(philosopher->death);
 	}
-}
+}*/
 
 void	ft_sleeping(t_philo *philosopher)
 {
@@ -99,7 +115,6 @@ void	*ft_single_philosopher_routine(void *arg)
 	pthread_mutex_lock(&philosopher->eating);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(&philosopher->eating);
-	usleep(500);
 	while (1)
 	{
 		pthread_mutex_lock(philosopher->death);
@@ -122,10 +137,11 @@ void	*ft_philosophers_routine(void *arg)
 	pthread_mutex_lock(&philosopher->eating);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(&philosopher->eating);
-	if (philosopher->id % 2 != 0)
-		usleep(500);
 	while (1)
 	{
+		ft_thinking(philosopher);
+		ft_eating(philosopher);
+		ft_sleeping(philosopher); 	
 		pthread_mutex_lock(philosopher->death);
 		if (!*philosopher->everyone_alive)
 		{
@@ -133,9 +149,6 @@ void	*ft_philosophers_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(philosopher->death);
-		ft_thinking(philosopher);
-		ft_eating(philosopher);
-		ft_sleeping(philosopher); 
 	}
 	return (NULL);
 }
