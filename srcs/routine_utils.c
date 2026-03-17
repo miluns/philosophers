@@ -64,7 +64,7 @@ void	ft_take_neighbors_fork(t_philo *philosophers)
 	if (*philosophers->everyone_alive)
 	{
 		pthread_mutex_unlock(philosophers->death);
-		ft_safe_print(philosophers, "has taken a fork");
+		ft_safe_print(philosophers, "has taken neighbor's fork");
 	}
 	else
 		pthread_mutex_unlock(philosophers->death);
@@ -81,8 +81,7 @@ void	ft_eat_and_release_forks(t_philo *philosophers)
 		pthread_mutex_unlock(&philosophers->eating);
 		ft_safe_print(philosophers, "is eating");
 		ft_usleep(philosophers->data.time_to_eat);
-		pthread_mutex_unlock(&philosophers->fork);
-		pthread_mutex_unlock(&philosophers->previous->fork);
+		ft_release_forks(philosophers);
 		pthread_mutex_lock(&philosophers->eating);
 		if (philosophers->data.times_to_eat > -1)
 			philosophers->data.eating_turns++;

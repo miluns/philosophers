@@ -80,6 +80,9 @@ void	ft_safe_print(t_philo *philosopher, char *str);
 void	ft_safe_print_monitor(t_philo *philosopher, char *str);
 
 void	ft_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes);
+void	ft_thread_cleanup(t_monitor *monitor, t_philo *philosophers);
+void	ft_mutexes_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes);
+void	ft_memory_cleanup(t_monitor *monitor, t_philo *philosophers);
 
 void	ft_print_philosophers_table(t_philo *philosophers);
 void	ft_print_start_settings(t_data start_settings);

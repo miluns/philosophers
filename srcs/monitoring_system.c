@@ -5,10 +5,9 @@ void	*ft_monitoring_system_individual_plan(void *arg)
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
-	usleep(100);
+	ft_usleep(100);
 	while (1)
 	{
-
 		pthread_mutex_lock(&monitor->philosophers->eating);
 		if (ft_get_time_in_ms() - monitor->philosophers->last_meal > (long)monitor->time_to_die) 
 		{
@@ -41,7 +40,7 @@ void	*ft_monitoring_system(void *arg)
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
-	usleep(100);	
+	ft_usleep(100);	
 	while (1)
 	{
 		pthread_mutex_lock(&monitor->philosophers->eating);

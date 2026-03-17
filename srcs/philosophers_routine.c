@@ -14,8 +14,10 @@ void	ft_thinking(t_philo *philosopher)
 
 void	ft_lonely_eating(t_philo *philosopher)
 {
+	pthread_mutex_lock(philosopher->death);
 	if (*philosopher->everyone_alive)
 	{
+		pthread_mutex_unlock(philosopher->death);
 		pthread_mutex_lock(&philosopher->fork);
 		ft_safe_print(philosopher, "has taken a fork");
 		pthread_mutex_unlock(&philosopher->fork);
@@ -115,17 +117,8 @@ void	*ft_single_philosopher_routine(void *arg)
 	pthread_mutex_lock(&philosopher->eating);
 	philosopher->last_meal = ft_get_time_in_ms();
 	pthread_mutex_unlock(&philosopher->eating);
-	while (1)
-	{
-		pthread_mutex_lock(philosopher->death);
-		if (!*philosopher->everyone_alive)
-		{
-			pthread_mutex_unlock(philosopher->death);
-			break ;
-		}
-		ft_thinking(philosopher);
-		ft_lonely_eating(philosopher);
-	}
+	ft_thinking(philosopher);
+	ft_lonely_eating(philosopher);
 	return (NULL);
 }
 
