@@ -6,7 +6,7 @@
 /*   By: mstawski <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 13:33:15 by mstawski          #+#    #+#             */
-/*   Updated: 2026/03/18 14:00:06 by mstawski         ###   ########.fr       */
+/*   Updated: 2026/03/18 21:55:18 by mstawski         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_update_death_flag(t_monitor *monitor, t_philo *philosopher)
 bool	ft_philosophers_death_check(t_monitor *monitor)
 {
 	t_philo	*philosophers;
-	int	i;
+	int		i;
 
 	philosophers = monitor->philosophers;
 	i = 0;
@@ -49,8 +49,8 @@ bool	ft_philosophers_death_check(t_monitor *monitor)
 
 bool	ft_philosophers_meals_check(t_monitor *monitor)
 {
-	t_philo *philosophers;
-	int	i;
+	t_philo	*philosophers;
+	int		i;
 
 	philosophers = monitor->philosophers;
 	i = 0;
