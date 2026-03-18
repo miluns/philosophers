@@ -102,12 +102,13 @@ void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers);
 void	ft_create_monitoring_system_thread(t_monitor *monitor);
 
 //-----------------------------------------------------------------------------
-//	MONITORING_SYSTEM (4)
+//	MONITORING_SYSTEM (5)
 //-----------------------------------------------------------------------------
 void	*ft_monitoring_system(void *arg);
 void	*ft_monitoring_system_individual_plan(void *arg);
 bool	ft_philosophers_death_check(t_monitor *monitor);
 bool	ft_philosophers_meals_check(t_monitor *monitor);
+void	ft_update_death_flag(t_monitor *monitor, t_philo *philosopher);
 
 //-----------------------------------------------------------------------------
 //	CLEANUP	(5)

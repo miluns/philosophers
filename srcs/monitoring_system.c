@@ -12,44 +12,62 @@
 
 #include "../philosophers.h"
 
+void	ft_update_death_flag(t_monitor *monitor, t_philo *philosopher)
+{
+	pthread_mutex_lock(philosopher->death);
+	monitor->everyone_alive = 0;
+	pthread_mutex_unlock(philosopher->death);
+	pthread_mutex_unlock(&philosopher->eating);
+}
+
 bool	ft_philosophers_death_check(t_monitor *monitor)
 {
-	monitor->time_to_die = (long)monitor->time_to_die;
-	pthread_mutex_lock(&monitor->philosophers->eating);
-	if ((ft_get_time_in_ms() - monitor->philosophers->last_meal)
-		> monitor->time_to_die)
+	t_philo	*philosophers;
+	int	i;
+
+	philosophers = monitor->philosophers;
+	i = 0;
+	while (i < monitor->philosophers_nb)
 	{
-		pthread_mutex_lock(monitor->philosophers->death);
-		monitor->everyone_alive = 0;
-		ft_safe_print_monitor(monitor->philosophers, "died");
-		pthread_mutex_unlock(monitor->philosophers->death);
-		pthread_mutex_unlock(&monitor->philosophers->eating);
-		return (true);
+		pthread_mutex_lock(&philosophers->eating);
+		if ((ft_get_time_in_ms() - philosophers->last_meal)
+			> (long)monitor->time_to_die)
+		{
+			pthread_mutex_lock(philosophers->death);
+			monitor->everyone_alive = 0;
+			ft_safe_print_monitor(philosophers, "died");
+			pthread_mutex_unlock(philosophers->death);
+			pthread_mutex_unlock(&philosophers->eating);
+			return (true);
+		}
+		pthread_mutex_unlock(&philosophers->eating);
+		philosophers = philosophers->next;
+		i++;
 	}
-	pthread_mutex_unlock(&monitor->philosophers->eating);
 	return (false);
 }
 
 bool	ft_philosophers_meals_check(t_monitor *monitor)
 {
-	if (monitor->times_to_eat > 0)
+	t_philo *philosophers;
+	int	i;
+
+	philosophers = monitor->philosophers;
+	i = 0;
+	while (i < monitor->philosophers_nb)
 	{
-		pthread_mutex_lock(&monitor->philosophers->eating);
-		if (monitor->philosophers->data.eating_turns == monitor->times_to_eat)
+		pthread_mutex_lock(&philosophers->eating);
+		if (philosophers->data.eating_turns == monitor->times_to_eat)
 		{
-			if (!monitor->philosophers->stuffed)
+			if (!philosophers->stuffed)
 				monitor->stuffed_philosophers++;
-			monitor->philosophers->stuffed = 1;
+			philosophers->stuffed = 1;
 			if (monitor->stuffed_philosophers == monitor->philosophers_nb)
-			{
-				pthread_mutex_lock(monitor->philosophers->death);
-				monitor->everyone_alive = 0;
-				pthread_mutex_unlock(monitor->philosophers->death);
-				pthread_mutex_unlock(&monitor->philosophers->eating);
-				return (true);
-			}
+				return (ft_update_death_flag(monitor, philosophers), true);
 		}
-		pthread_mutex_unlock(&monitor->philosophers->eating);
+		pthread_mutex_unlock(&philosophers->eating);
+		philosophers = philosophers->next;
+		i++;
 	}
 	return (false);
 }
@@ -78,12 +96,11 @@ void	*ft_monitoring_system(void *arg)
 	while (1)
 	{
 		if (ft_philosophers_death_check(monitor))
-			break ;
+			return (NULL);
 		if (monitor->times_to_eat > 0)
 			if (ft_philosophers_meals_check(monitor))
-				break ;
+				return (NULL);
 		monitor->philosophers = monitor->philosophers->next;
 		usleep(100);
 	}
-	return (NULL);
 }
