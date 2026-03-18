@@ -57,7 +57,7 @@ make
 **References & Documentation:**
 * Wikipedia: Dining Philosophers Problem - Overview of the classic problem and theoretical solutions.
 * POSIX Threads (pthreads) Documentation - Guide on how to create, manage, and synchronize threads in C.
-* Mutexes in C - Understanding how to use pthread_mutex_init, pthread_mutex_lock, and pthread_mutex_unlock to protect shared resources.
+* Mutex lock for Linux Thread Synchronization (geeks for geeks) - Understanding how to use pthread_mutex_init, pthread_mutex_lock, and pthread_mutex_unlock to protect shared resources.
 
 **AI Usage:**
 Large Language Models (like ChatGPT/Gemini) were used during the research phase of this project to better understand the concept of thread deadlocks and to conceptualize the logic for avoiding data races. AI was not used to write the core simulation code or the synchronization algorithms, which were implemented manually.
