@@ -62,6 +62,8 @@ void	ft_create_monitoring_system_thread(t_monitor *monitor);
 
 void	*ft_monitoring_system(void *arg);
 void	*ft_monitoring_system_individual_plan(void *arg);
+bool	ft_philosophers_death_check(t_monitor *monitor);
+bool	ft_philosophers_meals_check(t_monitor *monitor);
 
 void    *ft_philosophers_routine(void *arg);
 void	*ft_single_philosopher_routine(void *arg);

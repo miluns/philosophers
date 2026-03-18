@@ -23,13 +23,17 @@ void	ft_thread_cleanup(t_monitor *monitor, t_philo *philosophers)
 	}
 }
 
+void	ft_destroy_mutexes(t_philo *philosopher)
+{
+
+	pthread_mutex_destroy(&philosopher->fork);
+	pthread_mutex_destroy(&philosopher->eating);
+}
+
 void	ft_mutexes_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex_t *global_mutexes)
 {
 	if (monitor->number_of_philosophers == 1)
-	{
-		pthread_mutex_destroy(&philosophers->fork);
-		pthread_mutex_destroy(&philosophers->eating);
-	}
+		ft_destroy_mutexes(philosophers);
 	else
 	{
 		while (philosophers && philosophers->id != philosophers->data.number_of_philosophers)
@@ -37,16 +41,13 @@ void	ft_mutexes_cleanup(t_monitor *monitor, t_philo *philosophers, pthread_mutex
 		philosophers = philosophers->previous;
 		while (philosophers && philosophers->id > 1)
 		{
-			pthread_mutex_destroy(&philosophers->next->fork);
-			pthread_mutex_destroy(&philosophers->next->eating);
+			ft_destroy_mutexes(philosophers->next);
 			philosophers = philosophers->previous;
 		}
 		if (philosophers->id == 1)
 		{	
-			pthread_mutex_destroy(&philosophers->next->fork);
-			pthread_mutex_destroy(&philosophers->next->eating);
-			pthread_mutex_destroy(&philosophers->fork);
-			pthread_mutex_destroy(&philosophers->eating);
+			ft_destroy_mutexes(philosophers->next);
+			ft_destroy_mutexes(philosophers);
 		}
 	}
 	pthread_mutex_destroy(&global_mutexes[0]);
