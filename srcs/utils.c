@@ -1,53 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mstawski <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 13:34:37 by mstawski          #+#    #+#             */
+/*   Updated: 2026/03/18 13:55:30 by mstawski         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philosophers.h"
 
-int	ft_philo_atoi(const char *nptr)
+long	ft_get_time_in_ms(void)
 {
-	int	numb;
-	int	sign;
+	struct timeval	time;
 
-	if (!nptr || !*nptr)
-		return (0);
-	numb = 0;
-	sign = 0;
-	while ((*nptr > 6 && *nptr < 14) || *nptr == 32)
-		nptr++;
-	if (*nptr == 43 || *nptr == 45)
-		sign += *(nptr++);
-	while (*nptr > 47 && *nptr < 58)
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
+
+void	ft_usleep(long ms)
+{
+	long	start;
+
+	if (ms <= 0)
+		return ;
+	start = ft_get_time_in_ms();
+	while (ft_get_time_in_ms() - start < ms)
+		usleep(500);
+}
+
+void	ft_safe_print(t_philo *philosopher, char *str)
+{
+	if (!philosopher || !str)
+		return ;
+	pthread_mutex_lock(philosopher->death);
+	if (*philosopher->everyone_alive)
 	{
-		numb *= 10;
-		numb += (*(nptr++) - 48);
+		pthread_mutex_unlock(philosopher->death);
+		pthread_mutex_lock(philosopher->print);
+		printf("%ld %d %s\n", ft_get_time_in_ms(), philosopher->id, str);
+		pthread_mutex_unlock(philosopher->print);
 	}
-	if (sign == 45)
-		return (numb * (-1));
-	return (numb);
+	else
+		pthread_mutex_unlock(philosopher->death);
 }
 
-void	ft_initialize_global_mutexes(pthread_mutex_t *global_mutexes)
+void	ft_safe_print_monitor(t_philo *philosopher, char *str)
 {
-	pthread_mutex_init(&global_mutexes[0], NULL);
-	pthread_mutex_init(&global_mutexes[1], NULL);
-}
-
-void	ft_print_philosophers_table(t_philo *philosophers)
-{
-	int	i;
-
-	i = 0;
-	while (i < philosophers->data.number_of_philosophers)
-	{
-		printf("ITERATION: %i\n%p	philo->id: %i\nphilo->next addr: %p\n",i, philosophers, philosophers->id, philosophers->next);
-		i++;
-		philosophers = philosophers->next;
-	}
-	printf("LIST PRINTED\n");
-}
-
-void	ft_print_start_settings(t_data start_settings)
-{
-	printf("NUMBER OF PHILOS: %i\n", start_settings.number_of_philosophers);
-	printf("TIME TO DIE: %i\n", start_settings.time_to_die);
-	printf("TIME TO EAT: %i\n", start_settings.time_to_eat);
-	printf("TIME TO SLEEP: %i\n", start_settings.time_to_sleep);
-	printf("TIMES TO EAT: %i\n", start_settings.times_to_eat);
+	if (!philosopher || !str)
+		return ;
+	pthread_mutex_lock(philosopher->print);
+	printf("%ld %d %s\n", ft_get_time_in_ms(), philosopher->id, str);
+	pthread_mutex_unlock(philosopher->print);
 }

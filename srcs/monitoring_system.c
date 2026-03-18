@@ -1,9 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitoring_system.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mstawski <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 13:33:15 by mstawski          #+#    #+#             */
+/*   Updated: 2026/03/18 14:00:06 by mstawski         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philosophers.h"
 
 bool	ft_philosophers_death_check(t_monitor *monitor)
-{	
+{
+	monitor->time_to_die = (long)monitor->time_to_die;
 	pthread_mutex_lock(&monitor->philosophers->eating);
-	if ((ft_get_time_in_ms() - monitor->philosophers->last_meal) > (long)monitor->time_to_die) 
+	if ((ft_get_time_in_ms() - monitor->philosophers->last_meal)
+		> monitor->time_to_die)
 	{
 		pthread_mutex_lock(monitor->philosophers->death);
 		monitor->everyone_alive = 0;
@@ -26,7 +40,7 @@ bool	ft_philosophers_meals_check(t_monitor *monitor)
 			if (!monitor->philosophers->stuffed)
 				monitor->stuffed_philosophers++;
 			monitor->philosophers->stuffed = 1;
-			if (monitor->stuffed_philosophers == monitor->number_of_philosophers)
+			if (monitor->stuffed_philosophers == monitor->philosophers_nb)
 			{
 				pthread_mutex_lock(monitor->philosophers->death);
 				monitor->everyone_alive = 0;
@@ -60,7 +74,7 @@ void	*ft_monitoring_system(void *arg)
 	t_monitor	*monitor;
 
 	monitor = (t_monitor *)arg;
-	ft_usleep(100);	
+	ft_usleep(100);
 	while (1)
 	{
 		if (ft_philosophers_death_check(monitor))
@@ -73,24 +87,3 @@ void	*ft_monitoring_system(void *arg)
 	}
 	return (NULL);
 }
-
-void	ft_create_monitoring_system(t_monitor *monitor, t_philo *philosophers)
-{
-	monitor->philosophers = philosophers;
-	monitor->everyone_alive = 1;
-	monitor->time_to_die = philosophers->data.time_to_die;
-	monitor->time_to_eat = philosophers->data.time_to_eat;
-	monitor->time_to_sleep = philosophers->data.time_to_sleep;
-	monitor->times_to_eat = philosophers->data.times_to_eat;
-	monitor->number_of_philosophers = philosophers->data.number_of_philosophers;
-	monitor->stuffed_philosophers = 0;
-}
-
-void	ft_create_monitoring_system_thread(t_monitor *monitor)
-{
-	if (monitor->philosophers->data.number_of_philosophers == 1)
-		pthread_create(&monitor->thread, NULL, ft_monitoring_system_individual_plan, monitor);
-	else	
-		pthread_create(&monitor->thread, NULL, ft_monitoring_system, monitor);
-}
-
