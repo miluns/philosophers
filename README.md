@@ -39,7 +39,7 @@ The project emphasizes:
 
 ```bash
 # Clone the repository
-git clone git@github.com:<your_username>/philosophers.git
+git clone git@github.com:mstawski/philosophers.git
 cd philosophers/philo
 
 # Compile the program
